@@ -90,3 +90,23 @@ ALLOWED_ORIGINS=http://localhost:3000,https://your-app.vercel.app
 ## Deployment
 
 Deployed on **Render** (see `render.yaml`). The `backend/` directory is the root for the Render service.
+
+## Jira
+
+- **URL:** https://lernerpb.atlassian.net
+- **Proyecto:** MGL (mw global link, ID: 10033)
+- **Email:** lerner.pb@gmail.com
+- **Credenciales guardadas en:** `C:\Users\pablo\.claude\projects\C--Users-pablo-Desktop-bot-curriculum\memory\reference_jira.md`
+
+Para consultar issues desde PowerShell:
+
+```powershell
+$token = '<API_TOKEN>'
+$email = 'lerner.pb@gmail.com'
+$pair = $email + ':' + $token
+$creds = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes($pair))
+$headers = @{Authorization='Basic ' + $creds; Accept='application/json'; 'Content-Type'='application/json'}
+$body = @{jql='project = MGL AND status = "In Progress"'; fields=@('summary','status','assignee')} | ConvertTo-Json
+$r = Invoke-RestMethod -Uri 'https://lernerpb.atlassian.net/rest/api/3/search/jql' -Method POST -Headers $headers -Body $body
+$r.issues | ForEach-Object { "$($_.key) - $($_.fields.summary)" }
+```

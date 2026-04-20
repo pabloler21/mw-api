@@ -1,13 +1,13 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 
 
 class LeadCreate(BaseModel):
-    nombre: str
-    empresa: str
-    email: str
-    puerto_destino: str | None = None
-    producto: str
-    mensaje: str | None = None
+    name: str
+    company: str
+    email: EmailStr
+    destination_port: str | None = None
+    product: str
+    message: str | None = None
 
 
 class LeadResponse(BaseModel):
