@@ -34,7 +34,7 @@ jobs:
           RESEND_API_KEY: "test"
           SUPABASE_URL: "https://placeholder.supabase.co"
           SUPABASE_KEY: "placeholder"
-          ALLOWED_ORIGINS: "http://localhost:3000"
+          ALLOWED_ORIGINS: '["http://localhost:3000"]'
 
   migrate:
     name: Push Migrations
