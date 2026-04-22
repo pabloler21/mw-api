@@ -15,7 +15,7 @@ async def send_lead_notification(lead_data: dict) -> bool:
             json={
                 "from": "leads@mwgloballink.com",
                 "to": ["info@mwgloballink.com"],
-                "subject": f"New lead: {lead_data.get('empresa', 'Unknown')}",
+                "subject": f"New lead: {lead_data.get('company', 'Unknown')}",
                 "text": str(lead_data),
             },
         )
