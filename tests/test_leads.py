@@ -15,6 +15,9 @@ VALID_LEAD = {
     "product": "olive oil",
 }
 
+PATCH_INSERT = "app.api.leads.insert_lead"
+PATCH_NOTIFY = "app.api.leads.send_lead_notification"
+
 
 @pytest.fixture(autouse=True)
 def reset_rate_limit():
@@ -30,8 +33,10 @@ def test_health_check():
 
 
 def test_submit_lead_valid():
-    with patch("app.api.leads.insert_lead", new_callable=AsyncMock, return_value=True), \
-         patch("app.api.leads.send_lead_notification", new_callable=AsyncMock, return_value=True):
+    with (
+        patch(PATCH_INSERT, new_callable=AsyncMock, return_value=True),
+        patch(PATCH_NOTIFY, new_callable=AsyncMock, return_value=True),
+    ):
         response = client.post("/api/leads", json=VALID_LEAD)
     assert response.status_code == 200
     assert response.json()["success"] is True
@@ -48,15 +53,19 @@ def test_submit_lead_invalid_email():
 
 
 def test_submit_lead_supabase_failure():
-    with patch("app.api.leads.insert_lead", new_callable=AsyncMock, return_value=False), \
-         patch("app.api.leads.send_lead_notification", new_callable=AsyncMock, return_value=True):
+    with (
+        patch(PATCH_INSERT, new_callable=AsyncMock, return_value=False),
+        patch(PATCH_NOTIFY, new_callable=AsyncMock, return_value=True),
+    ):
         response = client.post("/api/leads", json=VALID_LEAD)
     assert response.status_code == 500
 
 
 def test_submit_lead_rate_limit():
-    with patch("app.api.leads.insert_lead", new_callable=AsyncMock, return_value=True), \
-         patch("app.api.leads.send_lead_notification", new_callable=AsyncMock, return_value=True):
+    with (
+        patch(PATCH_INSERT, new_callable=AsyncMock, return_value=True),
+        patch(PATCH_NOTIFY, new_callable=AsyncMock, return_value=True),
+    ):
         for _ in range(5):
             client.post("/api/leads", json=VALID_LEAD)
         response = client.post("/api/leads", json=VALID_LEAD)
@@ -64,8 +73,10 @@ def test_submit_lead_rate_limit():
 
 
 def test_submit_lead_optional_fields():
-    with patch("app.api.leads.insert_lead", new_callable=AsyncMock, return_value=True), \
-         patch("app.api.leads.send_lead_notification", new_callable=AsyncMock, return_value=True):
+    with (
+        patch(PATCH_INSERT, new_callable=AsyncMock, return_value=True),
+        patch(PATCH_NOTIFY, new_callable=AsyncMock, return_value=True),
+    ):
         response = client.post("/api/leads", json={
             **VALID_LEAD,
             "destination_port": "Dubai",
