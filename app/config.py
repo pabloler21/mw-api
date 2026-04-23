@@ -8,6 +8,7 @@ class Settings(BaseSettings):
     resend_api_key: str = ""
     supabase_url: str = ""
     supabase_key: str = ""
+    ceo_email: str = ""
 
     model_config = {"env_file": ".env"}
 
