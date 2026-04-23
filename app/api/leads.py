@@ -16,7 +16,9 @@ async def submit_lead(lead: LeadCreate, request: Request) -> LeadResponse:
     ip = request.client.host
     now = datetime.now(timezone.utc)
 
-    timestamps = [t for t in _rate_limit.get(ip, []) if (now - t).seconds < 3600]
+    timestamps = [
+        t for t in _rate_limit.get(ip, []) if (now - t).total_seconds() < 3600
+    ]
     if len(timestamps) >= 5:
         raise HTTPException(
             status_code=429, detail="Too many requests. Try again later."
@@ -29,6 +31,9 @@ async def submit_lead(lead: LeadCreate, request: Request) -> LeadResponse:
     if not saved:
         raise HTTPException(status_code=500, detail="Failed to save lead.")
 
-    await send_lead_notification(data)
+    try:
+        await send_lead_notification(lead)
+    except Exception:
+        pass
 
     return LeadResponse(success=True, message="Thanks! We'll be in touch soon.")
