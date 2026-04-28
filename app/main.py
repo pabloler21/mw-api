@@ -21,4 +21,5 @@ app.include_router(leads.router, prefix="/api")
 
 @app.get("/health")
 async def health_check():
-    return {"status": "ok", "service": settings.app_name, "env": os.getenv("APP_ENV", "local")}
+    env = os.getenv("APP_ENV", "local")
+    return {"status": "ok", "service": settings.app_name, "env": env}
