@@ -2,9 +2,13 @@ services:
   - type: web
     name: mw-global-link-api
     runtime: python
+    branch: master
+    autoDeploy: false
     buildCommand: pip install .
     startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
     envVars:
+      - key: APP_ENV
+        value: production
       - key: DEBUG
         value: false
       - key: RESEND_API_KEY
@@ -12,4 +16,31 @@ services:
       - key: SUPABASE_URL
         sync: false
       - key: SUPABASE_KEY
+        sync: false
+      - key: ALLOWED_ORIGINS
+        sync: false
+      - key: CEO_EMAIL
+        sync: false
+
+  - type: web
+    name: mw-global-link-api-dev
+    runtime: python
+    branch: development
+    autoDeploy: false
+    buildCommand: pip install .
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: APP_ENV
+        value: development
+      - key: DEBUG
+        value: true
+      - key: RESEND_API_KEY
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_KEY
+        sync: false
+      - key: ALLOWED_ORIGINS
+        sync: false
+      - key: CEO_EMAIL
         sync: false
