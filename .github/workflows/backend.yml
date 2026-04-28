@@ -2,9 +2,9 @@ name: Backend CI
 
 on:
   push:
-    branches: [master]
+    branches: [master, development]
   pull_request:
-    branches: [master]
+    branches: [master, development]
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
@@ -33,10 +33,12 @@ jobs:
       - name: Test
         run: pytest
         env:
+          APP_ENV: development
           DEBUG: "true"
-          RESEND_API_KEY: "test"
-          SUPABASE_URL: "https://placeholder.supabase.co"
-          SUPABASE_KEY: "placeholder"
+          RESEND_API_KEY: ${{ secrets.DEV_RESEND_API_KEY }}
+          SUPABASE_URL: ${{ secrets.DEV_SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.DEV_SUPABASE_KEY }}
+          CEO_EMAIL: ${{ secrets.DEV_CEO_EMAIL }}
           ALLOWED_ORIGINS: '["http://localhost:3000"]'
 
   migrate:
@@ -45,7 +47,7 @@ jobs:
     needs: lint-and-test
     # Only runs on direct push to master — never on pull requests.
     # This prevents touching the production DB from unreviewed branches.
-    if: github.event_name == 'push'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
 
     steps:
       - name: Checkout

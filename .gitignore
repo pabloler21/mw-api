@@ -18,6 +18,8 @@ env/
 # Env files
 .env
 .env.local
+.env.development
+.env.production
 
 # Testing
 .pytest_cache/
