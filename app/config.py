@@ -1,4 +1,11 @@
+import os
+
 from pydantic_settings import BaseSettings
+
+
+def _env_file() -> str:
+    env = os.getenv("APP_ENV", "")
+    return f".env.{env}" if env else ".env"
 
 
 class Settings(BaseSettings):
@@ -10,7 +17,7 @@ class Settings(BaseSettings):
     supabase_key: str = ""
     ceo_email: str = ""
 
-    model_config = {"env_file": ".env"}
+    model_config = {"env_file": _env_file()}
 
 
 settings = Settings()
