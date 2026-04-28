@@ -1,5 +1,7 @@
+import json
 import os
 
+from pydantic import field_validator
 from pydantic_settings import BaseSettings
 
 
@@ -18,6 +20,16 @@ class Settings(BaseSettings):
     ceo_email: str = ""
 
     model_config = {"env_file": _env_file()}
+
+    @field_validator("allowed_origins", mode="before")
+    @classmethod
+    def parse_origins(cls, v: object) -> object:
+        if isinstance(v, str):
+            v = v.strip()
+            if v.startswith("["):
+                return json.loads(v)
+            return [o.strip() for o in v.split(",")]
+        return v
 
 
 settings = Settings()
