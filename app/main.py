@@ -1,3 +1,5 @@
+import os
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -19,4 +21,5 @@ app.include_router(leads.router, prefix="/api")
 
 @app.get("/health")
 async def health_check():
-    return {"status": "ok", "service": settings.app_name}
+    env = os.getenv("APP_ENV", "local")
+    return {"status": "ok", "service": settings.app_name, "env": env}
